@@ -1,349 +1,120 @@
-[@demox-labs/leo-wallet-adapter](README.md)
+@demox-labs/leo-wallet-adapter / [Exports](modules.md)
 
-# @demox-labs/leo-wallet-adapter
+# AleoWallet DApp Module
 
-## Index
+This module is required to provide communication between DApps and Aleo Wallet, it exposes unified interface for this interaction.
 
-### Enumerations
+## 🚀 Quick Start
 
-* [AleoDAppErrorType](enums/aleodapperrortype.md)
-* [AleoDAppMessageType](enums/aleodappmessagetype.md)
-* [AleoPageMessageType](enums/aleopagemessagetype.md)
+### Install
 
-### Classes
+```bash
+yarn add @demox-labs/leo-wallet-adapter
+```
 
-* [InvalidParamsAleoWalletError](classes/invalidparamsaleowalleterror.md)
-* [NotConnectedAleoWalletError](classes/notconnectedaleowalleterror.md)
-* [NotFoundAleoWalletError](classes/notfoundaleowalleterror.md)
-* [NotGrantedAleoWalletError](classes/notgrantedaleowalleterror.md)
-* [AleoWallet](classes/aleowallet.md)
-* [AleoWalletError](classes/aleowalleterror.md)
+### Usage
 
-### Interfaces
+```typescript
+import { AleoWallet } from "@demox-labs/leo-wallet-adapter";
 
-* [AleoDAppBroadcastRequest](interfaces/aleodappbroadcastrequest.md)
-* [AleoDAppBroadcastResponse](interfaces/aleodappbroadcastresponse.md)
-* [AleoDAppGetCurrentPermissionRequest](interfaces/aleodappgetcurrentpermissionrequest.md)
-* [AleoDAppGetCurrentPermissionResponse](interfaces/aleodappgetcurrentpermissionresponse.md)
-* [AleoDAppMessageBase](interfaces/aleodappmessagebase.md)
-* [AleoDAppMetadata](interfaces/aleodappmetadata.md)
-* [AleoDAppOperationRequest](interfaces/aleodappoperationrequest.md)
-* [AleoDAppOperationResponse](interfaces/aleodappoperationresponse.md)
-* [AleoDAppPermissionRequest](interfaces/aleodapppermissionrequest.md)
-* [AleoDAppPermissionResponse](interfaces/aleodapppermissionresponse.md)
-* [AleoDAppSignRequest](interfaces/aleodappsignrequest.md)
-* [AleoDAppSignResponse](interfaces/aleodappsignresponse.md)
-* [AleoPageMessage](interfaces/aleopagemessage.md)
+(async () => {
+  try {
+    const available = await AleoWallet.isAvailable();
+    if (!available) {
+      throw new Error("Aleo Wallet not installed");
+    }
 
-### Type aliases
+    // Note:
 
-* [AleoDAppMessage](README.md#aleodappmessage)
-* [AleoDAppNetwork](README.md#aleodappnetwork)
-* [AleoDAppPermission](README.md#aleodapppermission)
-* [AleoDAppRequest](README.md#aleodapprequest)
-* [AleoDAppResponse](README.md#aleodappresponse)
+    // use `AleoWallet.isAvailable` method only after web application fully loaded.
 
-### Functions
+    // Alternatively, you can use the method `AleoWallet.onAvailabilityChange`
+    // that tracks availability in real-time .
 
-* [assertConnected](README.md#assertconnected)
-* [assertResponse](README.md#assertresponse)
-* [createError](README.md#createerror)
-* [formatOpParams](README.md#formatopparams)
-* [getCurrentPermission](README.md#getcurrentpermission)
-* [isAvailable](README.md#isavailable)
-* [onAvailabilityChange](README.md#onavailabilitychange)
-* [onPermissionChange](README.md#onpermissionchange)
-* [permissionsAreEqual](README.md#permissionsareequal)
-* [request](README.md#request)
-* [requestBroadcast](README.md#requestbroadcast)
-* [requestOperation](README.md#requestoperation)
-* [requestPermission](README.md#requestpermission)
-* [requestSign](README.md#requestsign)
-* [send](README.md#send)
+    const wallet = new AleoWallet("My Super DApp");
+    await wallet.connect("carthagenet");
+  } catch (err) {
+    console.error(err);
+  }
+})();
+```
 
-## Type aliases
+#### Check permissions
 
-###  AleoDAppMessage
+```typescript
+import { AleoWallet } from "@demox-labs/leo-wallet-adapter";
 
-Ƭ **AleoDAppMessage**: *[AleoDAppRequest](README.md#aleodapprequest) | [AleoDAppResponse](README.md#aleodappresponse)*
+(async () => {
+  try {
+    const available = await AleoWallet.isAvailable();
+    if (!available) {
+      throw new Error("Aleo Wallet not installed");
+    }
 
-*Defined in [types.ts:1](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/types.ts#L1)*
+    const permission = await AleoWallet.getCurrentPermission();
+    // Alternatively, you can use the method `AleoWallet.onPermissionChange`
+    // that tracks current permission in real-time.
 
-___
+    console.info(permission);
+    // prints "{ rpc: string, pkh: string, publicKey: string }" if permission exists, "null" - if not.
 
-###  AleoDAppNetwork
+    const wallet = new AleoWallet("My Super DApp", permission);
 
-Ƭ **AleoDAppNetwork**: *"mainnet" | "ithacanet" | "hangzhounet" | "idiazabalnet" | "granadanet" | "edo2net" | "florencenet" | "sandbox" | object*
+    console.info(wallet.connected);
+    // prints "true" if permission exists, "false" - if not.
 
-*Defined in [types.ts:115](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/types.ts#L115)*
+    if (!wallet.connected) {
+      await wallet.connect("carthagenet");
+    }
 
-___
+    // ...
+  } catch (err) {
+    console.error(err);
+  }
+})();
+```
 
-###  AleoDAppPermission
+#### Sign
 
-Ƭ **AleoDAppPermission**: *object | null*
+```typescript
+import { AleoWallet } from "@demox-labs/leo-wallet-adapter";
 
-*Defined in [types.ts:109](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/types.ts#L109)*
+(async () => {
+  try {
+    const wallet = new AleoWallet("My Super DApp");
+    // ...
 
-Misc
+    // Only hex strings
+    const signature = await wallet.sign(
+      Buffer.from("Hello world").toString("hex")
+    );
+  } catch (err) {
+    console.error(err);
+  }
+})();
+```
 
-___
+### Demo
 
-###  AleoDAppRequest
+You can find the example of Counter DApp in [this repo](https://github.com/madfish-solutions/counter-dapp).
 
-Ƭ **AleoDAppRequest**: *[AleoDAppGetCurrentPermissionRequest](interfaces/aleodappgetcurrentpermissionrequest.md) | [AleoDAppPermissionRequest](interfaces/aleodapppermissionrequest.md) | [AleoDAppOperationRequest](interfaces/aleodappoperationrequest.md) | [AleoDAppSignRequest](interfaces/aleodappsignrequest.md) | [AleoDAppBroadcastRequest](interfaces/aleodappbroadcastrequest.md)*
+## API
 
-*Defined in [types.ts:3](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/types.ts#L3)*
+You can explore auto generated [full API Docs here](docs/README.md).
 
-___
+Probably you would be most interested in the [AleoWallet class](docs/classes/aleowallet.md) methods.
 
-###  AleoDAppResponse
+## Local Development
 
-Ƭ **AleoDAppResponse**: *[AleoDAppGetCurrentPermissionResponse](interfaces/aleodappgetcurrentpermissionresponse.md) | [AleoDAppPermissionResponse](interfaces/aleodapppermissionresponse.md) | [AleoDAppOperationResponse](interfaces/aleodappoperationresponse.md) | [AleoDAppSignResponse](interfaces/aleodappsignresponse.md) | [AleoDAppBroadcastResponse](interfaces/aleodappbroadcastresponse.md)*
+Below is a list of commands you will probably find useful.
 
-*Defined in [types.ts:10](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/types.ts#L10)*
+### npm run dev or yarn dev
 
-## Functions
+Runs the project in development/watch mode. Your project will be rebuilt upon changes.
 
-###  assertConnected
+Your library will be rebuilt if you make edits.
 
-▸ **assertConnected**(`perm`: [AleoDAppPermission](README.md#aleodapppermission)): *asserts perm*
+### npm run build or yarn build
 
-*Defined in [taquito-wallet.ts:156](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/taquito-wallet.ts#L156)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`perm` | [AleoDAppPermission](README.md#aleodapppermission) |
-
-**Returns:** *asserts perm*
-
-___
-
-###  assertResponse
-
-▸ **assertResponse**(`condition`: any): *asserts condition*
-
-*Defined in [client.ts:204](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L204)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`condition` | any |
-
-**Returns:** *asserts condition*
-
-___
-
-###  createError
-
-▸ **createError**(`payload`: any): *[AleoWalletError](classes/aleowalleterror.md)‹›*
-
-*Defined in [client.ts:179](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L179)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`payload` | any |
-
-**Returns:** *[AleoWalletError](classes/aleowalleterror.md)‹›*
-
-___
-
-###  formatOpParams
-
-▸ **formatOpParams**(`op`: any): *any*
-
-*Defined in [taquito-wallet.ts:162](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/taquito-wallet.ts#L162)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`op` | any |
-
-**Returns:** *any*
-
-___
-
-###  getCurrentPermission
-
-▸ **getCurrentPermission**(): *Promise‹null | object›*
-
-*Defined in [client.ts:82](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L82)*
-
-**Returns:** *Promise‹null | object›*
-
-___
-
-###  isAvailable
-
-▸ **isAvailable**(): *Promise‹boolean›*
-
-*Defined in [client.ts:15](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L15)*
-
-**Returns:** *Promise‹boolean›*
-
-___
-
-###  onAvailabilityChange
-
-▸ **onAvailabilityChange**(`callback`: function): *(Anonymous function)*
-
-*Defined in [client.ts:42](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L42)*
-
-**Parameters:**
-
-▪ **callback**: *function*
-
-▸ (`available`: boolean): *void*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`available` | boolean |
-
-**Returns:** *(Anonymous function)*
-
-___
-
-###  onPermissionChange
-
-▸ **onPermissionChange**(`callback`: function): *(Anonymous function)*
-
-*Defined in [client.ts:62](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L62)*
-
-**Parameters:**
-
-▪ **callback**: *function*
-
-▸ (`permission`: [AleoDAppPermission](README.md#aleodapppermission)): *void*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`permission` | [AleoDAppPermission](README.md#aleodapppermission) |
-
-**Returns:** *(Anonymous function)*
-
-___
-
-###  permissionsAreEqual
-
-▸ **permissionsAreEqual**(`aPerm`: [AleoDAppPermission](README.md#aleodapppermission), `bPerm`: [AleoDAppPermission](README.md#aleodapppermission)): *boolean*
-
-*Defined in [client.ts:171](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L171)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`aPerm` | [AleoDAppPermission](README.md#aleodapppermission) |
-`bPerm` | [AleoDAppPermission](README.md#aleodapppermission) |
-
-**Returns:** *boolean*
-
-___
-
-###  request
-
-▸ **request**(`payload`: [AleoDAppRequest](README.md#aleodapprequest)): *Promise‹[AleoDAppGetCurrentPermissionResponse](interfaces/aleodappgetcurrentpermissionresponse.md) | [AleoDAppPermissionResponse](interfaces/aleodapppermissionresponse.md) | [AleoDAppOperationResponse](interfaces/aleodappoperationresponse.md) | [AleoDAppSignResponse](interfaces/aleodappsignresponse.md) | [AleoDAppBroadcastResponse](interfaces/aleodappbroadcastresponse.md)›*
-
-*Defined in [client.ts:140](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L140)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`payload` | [AleoDAppRequest](README.md#aleodapprequest) |
-
-**Returns:** *Promise‹[AleoDAppGetCurrentPermissionResponse](interfaces/aleodappgetcurrentpermissionresponse.md) | [AleoDAppPermissionResponse](interfaces/aleodapppermissionresponse.md) | [AleoDAppOperationResponse](interfaces/aleodappoperationresponse.md) | [AleoDAppSignResponse](interfaces/aleodappsignresponse.md) | [AleoDAppBroadcastResponse](interfaces/aleodappbroadcastresponse.md)›*
-
-___
-
-###  requestBroadcast
-
-▸ **requestBroadcast**(`signedOpBytes`: string): *Promise‹string›*
-
-*Defined in [client.ts:131](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L131)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`signedOpBytes` | string |
-
-**Returns:** *Promise‹string›*
-
-___
-
-###  requestOperation
-
-▸ **requestOperation**(`sourcePkh`: string, `opParams`: any): *Promise‹string›*
-
-*Defined in [client.ts:111](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L111)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`sourcePkh` | string |
-`opParams` | any |
-
-**Returns:** *Promise‹string›*
-
-___
-
-###  requestPermission
-
-▸ **requestPermission**(`network`: [AleoDAppNetwork](README.md#aleodappnetwork), `appMeta`: [AleoDAppMetadata](interfaces/aleodappmetadata.md), `force`: boolean): *Promise‹object›*
-
-*Defined in [client.ts:92](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L92)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`network` | [AleoDAppNetwork](README.md#aleodappnetwork) |
-`appMeta` | [AleoDAppMetadata](interfaces/aleodappmetadata.md) |
-`force` | boolean |
-
-**Returns:** *Promise‹object›*
-
-___
-
-###  requestSign
-
-▸ **requestSign**(`sourcePkh`: string, `payload`: string): *Promise‹string›*
-
-*Defined in [client.ts:121](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L121)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`sourcePkh` | string |
-`payload` | string |
-
-**Returns:** *Promise‹string›*
-
-___
-
-###  send
-
-▸ **send**(`msg`: [AleoPageMessage](interfaces/aleopagemessage.md)): *void*
-
-*Defined in [client.ts:210](https://github.com/madfish-solutions/aleowallet-dapp/blob/0871fa5/src/client.ts#L210)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`msg` | [AleoPageMessage](interfaces/aleopagemessage.md) |
-
-**Returns:** *void*
+Bundles the package to the dist folder.
+The package is optimized and bundled with Rollup into multiple formats (CommonJS, UMD, and ES Module).
