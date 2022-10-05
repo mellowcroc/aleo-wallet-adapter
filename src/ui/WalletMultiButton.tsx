@@ -1,6 +1,6 @@
-import { useWallet } from '@solana/wallet-adapter-react';
 import type { FC } from 'react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useWallet } from '../useWallet.js';
 import type { ButtonProps } from './Button.js';
 import { Button } from './Button.js';
 import { useWalletModal } from './useWalletModal.js';
@@ -15,7 +15,7 @@ export const WalletMultiButton: FC<ButtonProps> = ({ children, ...props }) => {
     const [active, setActive] = useState(false);
     const ref = useRef<HTMLUListElement>(null);
 
-    const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
+    const base58 = useMemo(() => publicKey?.toString(), [publicKey]);
     const content = useMemo(() => {
         if (children) return children;
         if (!wallet || !base58) return null;

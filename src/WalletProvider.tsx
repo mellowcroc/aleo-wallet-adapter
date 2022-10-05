@@ -1,14 +1,17 @@
-import type {
+import {
     Adapter,
     MessageSignerWalletAdapterProps,
     SignerWalletAdapterProps,
     WalletAdapterProps,
     WalletError,
     WalletName,
+    WalletNotConnectedError,
+    WalletNotReadyError,
+    WalletReadyState,
 } from './base';
 import type { FC, ReactNode } from 'react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { WalletNotSelectedError } from './errors';
+import { WalletNotSelectedError } from './base/errors';
 import { useLocalStorage } from './useLocalStorage';
 import type { Wallet } from './useWallet.js';
 import { WalletContext } from './useWallet.js';

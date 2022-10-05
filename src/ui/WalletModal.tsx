@@ -1,10 +1,8 @@
-import type { WalletName } from '@solana/wallet-adapter-base';
-import { WalletReadyState } from '@solana/wallet-adapter-base';
-import type { Wallet } from '@solana/wallet-adapter-react';
-import { useWallet } from '@solana/wallet-adapter-react';
 import type { FC, MouseEvent } from 'react';
 import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { WalletName, WalletReadyState } from '../base/adapter.js';
+import { useWallet, Wallet } from '../useWallet.js';
 import { Collapse } from './Collapse.js';
 import { useWalletModal } from './useWalletModal.js';
 import { WalletListItem } from './WalletListItem.js';
@@ -45,7 +43,7 @@ export const WalletModal: FC<WalletModalProps> = ({ className = '', container = 
         return installedWallets.length
             ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               installedWallets[0]!
-            : wallets.find((wallet: { adapter: { name: WalletName } }) => wallet.adapter.name === 'Torus') ||
+            : wallets.find((wallet: { adapter: { name: WalletName } }) => wallet.adapter.name === 'Leo Wallet') ||
                   wallets.find((wallet: { adapter: { name: WalletName } }) => wallet.adapter.name === 'Phantom') ||
                   wallets.find((wallet: { readyState: any }) => wallet.readyState === WalletReadyState.Loadable) ||
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -150,7 +148,7 @@ export const WalletModal: FC<WalletModalProps> = ({ className = '', container = 
                         </button>
                         {installedWallets.length ? (
                             <>
-                                <h1 className="wallet-adapter-modal-title">Connect a wallet on Solana to continue</h1>
+                                <h1 className="wallet-adapter-modal-title">Connect a wallet on Aleo to continue</h1>
                                 <ul className="wallet-adapter-modal-list">
                                     {installedWallets.map((wallet) => (
                                         <WalletListItem
@@ -198,7 +196,7 @@ export const WalletModal: FC<WalletModalProps> = ({ className = '', container = 
                         ) : (
                             <>
                                 <h1 className="wallet-adapter-modal-title">
-                                    You'll need a wallet on Solana to continue
+                                    You'll need a wallet on Aleo to continue
                                 </h1>
                                 <div className="wallet-adapter-modal-middle">
                                     <WalletSVG />

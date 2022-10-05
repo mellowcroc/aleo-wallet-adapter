@@ -24,6 +24,10 @@ export class WalletConnectionError extends WalletError {
     name = 'WalletConnectionError';
 }
 
+export class WalletNotSelectedError extends WalletError {
+    name = 'WalletNotSelectedError';
+}
+
 export class WalletDisconnectedError extends WalletError {
     name = 'WalletDisconnectedError';
 }

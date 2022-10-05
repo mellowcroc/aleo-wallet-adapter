@@ -1,7 +1,7 @@
-import { WalletReadyState } from '@solana/wallet-adapter-base';
-import type { Wallet } from '@solana/wallet-adapter-react';
 import type { FC, MouseEventHandler } from 'react';
 import React from 'react';
+import { WalletReadyState } from '../base/adapter.js';
+import { Wallet } from '../useWallet.js';
 import { Button } from './Button.js';
 import { WalletIcon } from './WalletIcon.js';
 
