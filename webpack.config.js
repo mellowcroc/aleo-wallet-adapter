@@ -14,37 +14,37 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.(js|mjs|jsx|ts|tsx)$/,
-        enforce: 'pre',
-        include: SOURCE_PATH,
-        use: [
-          {
-            options: {
-              cache: true,
-              formatter: require.resolve('react-dev-utils/eslintFormatter'),
-              eslintPath: require.resolve('eslint'),
-              resolvePluginsRelativeTo: __dirname
-          },
-            loader: require.resolve('eslint-loader')
-          }
-        ]
-      },
-      {
-        test: /\.css$/i,
-        exclude: /\.module\.css$/i,
-        sideEffects: true,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1
-            }
-          },
-          'postcss-loader'
-        ]
-      },
+      // {
+      //   test: /\.(js|mjs|jsx|ts|tsx)$/,
+      //   enforce: 'pre',
+      //   include: SOURCE_PATH,
+      //   use: [
+      //     {
+      //       options: {
+      //         cache: true,
+      //         formatter: require.resolve('react-dev-utils/eslintFormatter'),
+      //         eslintPath: require.resolve('eslint'),
+      //         resolvePluginsRelativeTo: __dirname
+      //     },
+      //       loader: require.resolve('eslint-loader')
+      //     }
+      //   ]
+      // },
+      // {
+      //   test: /\.css$/i,
+      //   exclude: /\.module\.css$/i,
+      //   sideEffects: true,
+      //   use: [
+      //     MiniCssExtractPlugin.loader,
+      //     {
+      //       loader: 'css-loader',
+      //       options: {
+      //         importLoaders: 1
+      //       }
+      //     },
+      //     'postcss-loader'
+      //   ]
+      // },
       {
         test: /\.m?js$/i,
         exclude: /node_modules/,
