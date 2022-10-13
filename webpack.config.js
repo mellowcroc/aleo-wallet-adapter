@@ -1,16 +1,18 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackBar = require('webpackbar');
+const nodeExternals = require('webpack-node-externals');
 
 const SOURCE_PATH = path.join(__dirname, 'src');
 
 module.exports = {
   mode: process.env.NODE_ENV,
-  devtool: process.env.NODE_ENV === 'development' ? 'inline-source-map' : false,
+  devtool: process.env.NODE_ENV === 'development' ? 'inline-source-map' : 'source-map',
   entry: './src/index.ts',
   experiments: {
     asyncWebAssembly: true,
-    syncWebAssembly: true
+    syncWebAssembly: true,
+    outputModule: true
   },
   module: {
     rules: [
@@ -64,7 +66,7 @@ module.exports = {
   },
   plugins: [
     new WebpackBar({
-      name: 'Leo Wallet',
+      name: 'Aleo Wallet Adapter',
       color: '#9f7aea'
     }),
   ],
@@ -74,5 +76,13 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
+    library: {
+      name: 'AleoWalletAdapter',
+      type: 'umd',
+    },
+    globalObject: 'this',
+    publicPath: ''
   },
+  externals: [nodeExternals()],
+  externalsPresets: { node: true },
 };
