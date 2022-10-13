@@ -11,8 +11,7 @@ module.exports = {
   entry: './src/index.ts',
   experiments: {
     asyncWebAssembly: true,
-    syncWebAssembly: true,
-    outputModule: true
+    syncWebAssembly: true
   },
   module: {
     rules: [
@@ -82,7 +81,5 @@ module.exports = {
     },
     globalObject: 'this',
     publicPath: ''
-  },
-  externals: [nodeExternals()],
-  externalsPresets: { node: true },
+  }
 };
