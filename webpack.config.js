@@ -79,6 +79,7 @@ module.exports = {
       name: 'AleoWalletAdapter',
       type: 'umd',
     },
+    enabledWasmLoadingTypes: ['async-node-module'],
     globalObject: 'this',
     publicPath: ''
   }

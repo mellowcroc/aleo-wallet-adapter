@@ -22,7 +22,7 @@
   "homepage": "https://github.com/demox-labs/leo-wallet-adapter#readme",
   "scripts": {
     "copy-files": "copyfiles -u 1 src/**/*.css dist/",
-    "build": "rm -rf dist && cross-env NODE_ENV=production webpack && tsc",
+    "build": "rm -rf dist && cross-env NODE_ENV=development webpack && tsc",
     "dev": "cross-env NODE_ENV=development webpack --watch && tsc --watch",
     "prerelease": "npm run build",
     "release": "npm publish",
@@ -62,6 +62,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.8",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "file-loader": "^6.2.0",
     "microbundle": "^0.14.2",
     "ts-loader": "^9.4.1",
     "typedoc": "^0.17.8",
