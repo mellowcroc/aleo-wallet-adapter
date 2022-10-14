@@ -11,7 +11,8 @@ module.exports = {
   entry: './src/index.ts',
   experiments: {
     asyncWebAssembly: true,
-    syncWebAssembly: true
+    syncWebAssembly: true,
+    outputModule: true,
   },
   module: {
     rules: [
@@ -79,8 +80,9 @@ module.exports = {
       name: 'AleoWalletAdapter',
       type: 'umd',
     },
-    enabledWasmLoadingTypes: ['async-node-module'],
+    enabledWasmLoadingTypes: ['fetch', 'async-node-module'],
+    webassemblyModuleFilename: 'aleo-sdk.wasm',
     globalObject: 'this',
-    publicPath: ''
+    publicPath: 'auto'
   }
 };
