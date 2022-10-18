@@ -68,21 +68,21 @@ export class LeoWalletAdapter extends BaseMessageSignerWalletAdapter {
     private _connecting: boolean;
     private _wallet: LeoWallet | null;
     private _publicKey: string | null;
-    private _decryptPermission: AleoDAppDecryptPermission | null;
+    private _decryptPermission: AleoDAppDecryptPermission;
     private _viewKey: string | null;
     private _readyState: WalletReadyState =
         typeof window === 'undefined' || typeof document === 'undefined'
             ? WalletReadyState.Unsupported
             : WalletReadyState.NotDetected;
 
-    constructor({ network = 'sandbox', appName = 'sample' } : LeoWalletAdapterConfig = {}) {
+    constructor({ network = 'sandbox', appName = 'sample', decryptPermission = AleoDAppDecryptPermission.NoDecrypt } : LeoWalletAdapterConfig = {}) {
         super();
         this._connecting = false;
         this._network = network;
         this._appName = appName;
         this._wallet = null;
         this._publicKey = null;
-        this._decryptPermission = null;
+        this._decryptPermission = decryptPermission;
         this._viewKey = null;
 
         if (this._readyState !== WalletReadyState.Unsupported) {
@@ -130,14 +130,19 @@ export class LeoWalletAdapter extends BaseMessageSignerWalletAdapter {
                     throw new WalletDecryptionNotAllowedError();
 
                 case AleoDAppDecryptPermission.UponRequest || AleoDAppDecryptPermission.AutoDecrypt:
+                {
                     try {
                         const text = await requestDecrypt(this._permission?.publicKey!, cipherText);
                         return text;
                     } catch (error: any) {
                         throw new WalletDecryptionError(error?.message, error);
                     }
+                }
                 case AleoDAppDecryptPermission.ViewKeyAccess:
-                    throw new WalletDecryptionError();               
+                    throw new WalletDecryptionError();  
+                    
+                default:
+                    throw new WalletDecryptionError();
             }
         } catch (error: any) {
             this.emit('error', error);
@@ -145,7 +150,7 @@ export class LeoWalletAdapter extends BaseMessageSignerWalletAdapter {
         }
     }
 
-    async connect(decryptPermission = AleoDAppDecryptPermission.NoDecrypt): Promise<void> {
+    async connect(): Promise<void> {
         try {
             if (this.connected || this.connecting) return;
             if (this._readyState !== WalletReadyState.Installed) throw new WalletNotReadyError();
@@ -160,7 +165,7 @@ export class LeoWalletAdapter extends BaseMessageSignerWalletAdapter {
                     this._network,
                     { name: this._appName },
                     false,
-                    decryptPermission
+                    this._decryptPermission
                   );
                   if (!perm?.publicKey) {
                     throw new Error("No Public Key");
