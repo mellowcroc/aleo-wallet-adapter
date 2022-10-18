@@ -49,7 +49,8 @@ declare const window: LeoWindow;
 
 export interface LeoWalletAdapterConfig {
     network?: AleoDAppNetwork,
-    appName?: string
+    appName?: string,
+    decryptPermission?: AleoDAppDecryptPermission
 }
 
 export const LeoWalletName = 'Leo Wallet' as WalletName<'Leo Wallet'>;
@@ -116,6 +117,10 @@ export class LeoWalletAdapter extends BaseMessageSignerWalletAdapter {
         return this._readyState;
     }
 
+    set readyState(readyState) {
+        this._readyState = readyState;
+    }
+
     async decrypt(cipherText: string) {
         try {
             const wallet = this._wallet;
@@ -124,7 +129,7 @@ export class LeoWalletAdapter extends BaseMessageSignerWalletAdapter {
                 case AleoDAppDecryptPermission.NoDecrypt:
                     throw new WalletDecryptionNotAllowedError();
 
-                case AleoDAppDecryptPermission.AutoDecrypt:
+                case AleoDAppDecryptPermission.UponRequest || AleoDAppDecryptPermission.AutoDecrypt:
                     try {
                         const text = await requestDecrypt(this._permission?.publicKey!, cipherText);
                         return text;

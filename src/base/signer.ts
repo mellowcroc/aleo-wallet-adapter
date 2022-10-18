@@ -3,6 +3,8 @@ import { BaseWalletAdapter } from './adapter';
 import { WalletSendTransactionError, WalletSignTransactionError } from './errors';
 import type { TransactionOrVersionedTransaction } from './types';
 
+export type Adapter = WalletAdapter | SignerWalletAdapter | MessageSignerWalletAdapter;
+
 export interface SignerWalletAdapterProps<Name extends string = string> extends WalletAdapterProps<Name> {
     signTransaction<T extends TransactionOrVersionedTransaction<this['supportedTransactionVersions']>>(
         transaction: T

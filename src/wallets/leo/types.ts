@@ -136,11 +136,14 @@ export enum AleoDAppErrorType {
  * Misc
  */
 
-export enum AleoDAppDecryptPermission {
-  NoDecrypt = 'NO_DECRYPT', // The App cannot decrypt any records
-  AutoDecrypt = 'AUTO_DECRYPT', // The App can decrypt any requested records
-  ViewKeyAccess = 'VIEW_KEY_ACCESS' // The App gets the View Key of the connected wallet
-}
+export const AleoDAppDecryptPermission = {
+  NoDecrypt: 'NO_DECRYPT', // The App cannot decrypt any records
+  UponRequest: 'DECRYPT_UPON_REQUEST',
+  AutoDecrypt: 'AUTO_DECRYPT', // The App can decrypt any requested records
+  ViewKeyAccess: 'VIEW_KEY_ACCESS' // The App gets the View Key of the connected wallet
+};
+
+export type AleoDAppDecryptPermission = typeof AleoDAppDecryptPermission[keyof typeof AleoDAppDecryptPermission];
 
 export type AleoDAppPermission = {
   rpc: string;
