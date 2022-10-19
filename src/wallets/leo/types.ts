@@ -7,7 +7,7 @@ export type AleoDAppRequest =
   | AleoDAppSignRequest
   | AleoDAppViewKeyRequest
   | AleoDAppBroadcastRequest
-  | AleoDAppAutoDecryptRequest;
+  | AleoDAppDecryptRequest;
 
 export type AleoDAppResponse =
   | AleoDAppGetCurrentPermissionResponse
@@ -16,7 +16,7 @@ export type AleoDAppResponse =
   | AleoDAppSignResponse
   | AleoDAppViewKeyResponse
   | AleoDAppBroadcastResponse
-  | AleoDAppAutoDecryptResponse;
+  | AleoDAppDecryptResponse;
 
 export interface AleoDAppMessageBase {
   type: AleoDAppMessageType;
@@ -35,8 +35,8 @@ export enum AleoDAppMessageType {
   ViewKeyResponse = "VIEWKEY_RESPONSE",
   BroadcastRequest = "BROADCAST_REQUEST",
   BroadcastResponse = "BROADCAST_RESPONSE",
-  AutoDecryptRequest = "AUTO_DECRYPT_REQUEST",
-  AutoDecryptResponse = "AUTO_DECRYPT_RESPONSE"
+  DecryptRequest = "DECRYPT_REQUEST",
+  DecryptResponse = "DECRYPT_RESPONSE"
 }
 
 /**
@@ -112,14 +112,14 @@ export interface AleoDAppBroadcastResponse extends AleoDAppMessageBase {
   opHash: string;
 }
 
-export interface AleoDAppAutoDecryptRequest extends AleoDAppMessageBase {
-  type: AleoDAppMessageType.AutoDecryptRequest;
+export interface AleoDAppDecryptRequest extends AleoDAppMessageBase {
+  type: AleoDAppMessageType.DecryptRequest;
   sourcePublicKey: string;
   cipherText: string;
 }
 
-export interface AleoDAppAutoDecryptResponse extends AleoDAppMessageBase {
-  type: AleoDAppMessageType.AutoDecryptResponse;
+export interface AleoDAppDecryptResponse extends AleoDAppMessageBase {
+  type: AleoDAppMessageType.DecryptResponse;
   text: string;
 }
 

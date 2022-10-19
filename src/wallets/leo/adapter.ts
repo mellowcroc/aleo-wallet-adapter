@@ -28,6 +28,7 @@ interface LeoWalletEvents {
 
 interface LeoWallet extends EventEmitter<LeoWalletEvents> {
     publicKey?: string;
+    viewKey?: string;
     signTransaction(transaction: any): Promise<any>;
     signAllTransactions(transactions: any[]): Promise<any[]>;
     signAndSendTransaction(
